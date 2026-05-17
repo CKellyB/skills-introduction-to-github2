@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}StockLens — AI-Powered Stock Analysis{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Deep Stock Intelligence</h1>
+        <p class="hero-subtitle">
+            AI-powered analysis combining real-time prices, SEC filings, news sentiment,
+            DCF valuation, and institutional-grade research.
+        </p>
+        <form class="hero-search" action="/analyze" method="GET">
+            <input
+                type="text"
+                name="symbol"
+                placeholder="Enter a stock ticker (e.g. MSFT, AAPL, NVDA)"
+                class="hero-search-input"
+                autofocus
+                autocomplete="off"
+            >
+            <button type="submit" class="hero-search-btn">Analyze Stock</button>
+        </form>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">What StockLens Analyzes</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💹</div>
+                <h3>Live Market Data</h3>
+                <p>Real-time prices, volume, 52-week ranges, and technical indicators.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏛️</div>
+                <h3>SEC Filings</h3>
+                <p>10-K annual reports, 10-Q quarterly filings, and 8-K material events via EDGAR.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📰</div>
+                <h3>News Sentiment</h3>
+                <p>Aggregated news from Yahoo Finance, Reuters, Google News, and more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧮</div>
+                <h3>DCF Valuation</h3>
+                <p>Two-stage discounted cash flow model with sensitivity analysis and margin of safety.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Financial Ratios</h3>
+                <p>P/E, PEG, P/B, EV/EBITDA, margins, ROE, and peer comparison metrics.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Deep Analysis</h3>
+                <p>Claude synthesizes all data into a comprehensive investment thesis with price targets.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="popular-section">
+    <div class="container">
+        <h2 class="section-title">Popular Stocks</h2>
+        <div class="popular-grid">
+            {% for stock in popular_stocks %}
+            <a href="/analyze?symbol={{ stock.symbol }}" class="popular-card">
+                <span class="popular-symbol">{{ stock.symbol }}</span>
+                <span class="popular-name">{{ stock.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

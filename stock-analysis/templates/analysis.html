@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}{{ symbol }} Analysis — StockLens{% endblock %}
+
+{% block content %}
+<div id="analysisApp" class="analysis-container">
+    <div class="loading-overlay" id="initialLoader">
+        <div class="loading-spinner large"></div>
+        <p>Loading analysis for <strong>{{ symbol }}</strong>...</p>
+    </div>
+
+    <!-- Will be populated by JS -->
+    <div id="analysisContent" class="hidden">
+
+        <!-- Header -->
+        <div class="stock-header" id="stockHeader"></div>
+
+        <!-- Score bar -->
+        <div class="score-section" id="scoreSection"></div>
+
+        <!-- Tab navigation -->
+        <div class="tabs-nav" id="tabsNav">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="financials">Financials</button>
+            <button class="tab-btn" data-tab="valuation">Valuation</button>
+            <button class="tab-btn" data-tab="sec">SEC Filings</button>
+            <button class="tab-btn" data-tab="news">News</button>
+            <button class="tab-btn" data-tab="ai">AI Analysis</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="tab-overview">
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Price Chart</h3>
+                    <div class="period-btns">
+                        <button class="period-btn active" data-period="1mo">1M</button>
+                        <button class="period-btn" data-period="3mo">3M</button>
+                        <button class="period-btn" data-period="6mo">6M</button>
+                        <button class="period-btn active-default" data-period="1y">1Y</button>
+                        <button class="period-btn" data-period="2y">2Y</button>
+                        <button class="period-btn" data-period="5y">5Y</button>
+                    </div>
+                    <div id="priceChart" style="height:340px"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Key Metrics</h3>
+                    <div id="keyMetrics"></div>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Analyst Ratings</h3>
+                    <div id="analystSection"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Earnings History</h3>
+                    <div id="earningsSection"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">About the Company</h3>
+                <div id="aboutSection"></div>
+            </div>
+        </div>
+
+        <!-- Financials Tab -->
+        <div class="tab-content" id="tab-financials">
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Revenue Trend (EDGAR)</h3>
+                    <div id="revenueChart" style="height:280px"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Net Income Trend (EDGAR)</h3>
+                    <div id="niChart" style="height:280px"></div>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Income Statement</h3>
+                    <div id="incomeSection"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Profitability Margins</h3>
+                    <div id="marginsSection"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Balance Sheet & Cash Flow</h3>
+                <div id="balanceSection"></div>
+            </div>
+        </div>
+
+        <!-- Valuation Tab -->
+        <div class="tab-content" id="tab-valuation">
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Valuation Multiples</h3>
+                    <div id="multiplesSection"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">DCF Valuation Model</h3>
+                    <div id="dcfSection"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">DCF Sensitivity Matrix — Intrinsic Value Per Share ($)</h3>
+                <div id="sensitivitySection"></div>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Fair Value Estimates</h3>
+                    <div id="fairValueSection"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">DCF Cash Flow Projections</h3>
+                    <div id="dcfChartSection" style="height:280px"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEC Tab -->
+        <div class="tab-content" id="tab-sec">
+            <div class="card">
+                <h3 class="card-title">Recent SEC Filings (EDGAR)</h3>
+                <div id="secSection"></div>
+            </div>
+        </div>
+
+        <!-- News Tab -->
+        <div class="tab-content" id="tab-news">
+            <div class="card">
+                <h3 class="card-title">Recent News & Sentiment</h3>
+                <div id="newsSection"></div>
+            </div>
+        </div>
+
+        <!-- AI Analysis Tab -->
+        <div class="tab-content" id="tab-ai">
+            <div class="card ai-card">
+                <div class="ai-header">
+                    <span class="ai-badge">🤖 AI Analysis</span>
+                    <h3 class="card-title">Claude Investment Research Report</h3>
+                    <p class="ai-subtitle">Synthesized from live market data, SEC filings, and news</p>
+                </div>
+                <div id="aiAnalysisSection"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analysis.js') }}"></script>
+<script>
+    initAnalysis("{{ symbol }}");
+</script>
+{% endblock %}

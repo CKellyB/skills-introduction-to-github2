@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Analyzing {{ symbol }} — StockLens{% endblock %}
+
+{% block content %}
+<div class="loading-page">
+    <div class="loading-card" id="loadingCard">
+        <div class="loading-spinner"></div>
+        <h2>Analyzing <span class="symbol-highlight">{{ symbol }}</span></h2>
+        <div class="loading-steps" id="loadingSteps">
+            <div class="step pending" id="step1">Fetching market data and financials...</div>
+            <div class="step pending" id="step2">Retrieving SEC filings from EDGAR...</div>
+            <div class="step pending" id="step3">Collecting news from multiple sources...</div>
+            <div class="step pending" id="step4">Running DCF valuation model...</div>
+            <div class="step pending" id="step5">Performing AI-powered deep analysis...</div>
+        </div>
+        <div class="loading-progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="loading-note">This takes 15-30 seconds. Claude is reading everything about {{ symbol }}.</p>
+    </div>
+    <div id="errorCard" class="error-card hidden">
+        <h2>Analysis Failed</h2>
+        <p id="errorMsg"></p>
+        <a href="/" class="btn-primary">Try Another Stock</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const symbol = "{{ symbol }}";
+const steps = document.querySelectorAll('.step');
+let currentStep = 0;
+let progressValue = 0;
+
+function advanceStep() {
+    if (currentStep < steps.length) {
+        steps[currentStep].classList.remove('pending');
+        steps[currentStep].classList.add('active');
+        currentStep++;
+    }
+}
+
+function completeStep() {
+    if (currentStep > 0) {
+        steps[currentStep - 1].classList.remove('active');
+        steps[currentStep - 1].classList.add('done');
+    }
+}
+
+const stepIntervals = [500, 2000, 4000, 7000, 10000];
+stepIntervals.forEach((delay, i) => {
+    setTimeout(() => { advanceStep(); }, delay);
+    setTimeout(() => { completeStep(); }, delay + 1500);
+});
+
+const progressInterval = setInterval(() => {
+    progressValue = Math.min(progressValue + 1, 90);
+    document.getElementById('progressBar').style.width = progressValue + '%';
+}, 300);
+
+fetch(`/api/analyze/${symbol}`)
+    .then(r => r.json())
+    .then(data => {
+        clearInterval(progressInterval);
+        if (data.error) {
+            document.getElementById('loadingCard').classList.add('hidden');
+            document.getElementById('errorCard').classList.remove('hidden');
+            document.getElementById('errorMsg').textContent = data.error;
+            return;
+        }
+        document.getElementById('progressBar').style.width = '100%';
+        steps.forEach(s => { s.className = 'step done'; });
+        sessionStorage.setItem('analysisData_' + symbol, JSON.stringify(data));
+        setTimeout(() => { window.location.href = `/stock/${symbol}`; }, 600);
+    })
+    .catch(err => {
+        clearInterval(progressInterval);
+        document.getElementById('loadingCard').classList.add('hidden');
+        document.getElementById('errorCard').classList.remove('hidden');
+        document.getElementById('errorMsg').textContent = 'Network error: ' + err.message;
+    });
+</script>
+{% endblock %}

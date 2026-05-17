@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StockLens — AI-Powered Stock Analysis{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span class="brand-icon">📈</span>
+                <span class="brand-name">StockLens</span>
+            </a>
+            <form class="nav-search" action="/analyze" method="GET">
+                <input type="text" name="symbol" placeholder="Search ticker (MSFT, AAPL...)" class="nav-search-input" autocomplete="off">
+                <button type="submit" class="nav-search-btn">Analyze</button>
+            </form>
+        </div>
+    </nav>
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>StockLens — AI-Powered Investment Research</p>
+            <p class="disclaimer">For educational and research purposes only. Not financial advice. Data sourced from public markets and SEC EDGAR.</p>
+        </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
